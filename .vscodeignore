@@ -1,0 +1,11 @@
+.github/**
+.vscode/**
+node_modules/**
+python/tests/**
+python/**/__pycache__/**
+python/.pytest_cache/**
+tests/**
+.gitignore
+.gitattributes
+.coverage
+htmlcov/**
