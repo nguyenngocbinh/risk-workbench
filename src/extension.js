@@ -9,7 +9,7 @@ function activate(context) {
   context.subscriptions.push(vscode.window.registerWebviewViewProvider("riskWorkbench.dashboard", provider));
 
   context.subscriptions.push(vscode.commands.registerCommand("riskWorkbench.openDashboard", async () => {
-    await vscode.commands.executeCommand("workbench.view.extension.riskWorkbench");
+    provider.openPanel();
   }));
   context.subscriptions.push(vscode.commands.registerCommand("riskWorkbench.selectPython", async () => {
     const selected = await vscode.window.showInputBox({
