@@ -59,6 +59,7 @@ def evaluate_binary(y_true, y_prob, cutoff: float = 0.5) -> dict:
     tpr = np.cumsum(ys)[ends] / int(y.sum())
     fpr = np.cumsum(1-ys)[ends] / int((1-y).sum())
     population_share = (ends + 1) / len(y)
+    roc_points = [{"fpr": 0.0, "tpr": 0.0}]
     gain_points = [{"population_share": 0.0, "positive_capture": 0.0}]
     step = max(1, int(np.ceil(len(ends) / 98)))
     for i in range(0, len(ends), step):
