@@ -78,6 +78,10 @@ def evaluate_binary(y_true, y_prob, cutoff: float = 0.5) -> dict:
         "confusion_matrix":{"tn":tn,"fp":fp,"fn":fn,"tp":tp},
         "precision":float(tp/(tp+fp)) if tp+fp else None,
         "recall":float(tp/(tp+fn)) if tp+fn else None,
+        "specificity":float(tn/(tn+fp)) if tn+fp else None,
+        "accuracy":float((tp+tn)/len(y)),
+        "f1_score":float(2*tp/(2*tp+fp+fn)) if 2*tp+fp+fn else None,
+        "mcc":float((tp*tn-fp*fn)/np.sqrt((tp+fp)*(tp+fn)*(tn+fp)*(tn+fn))) if (tp+fp)*(tp+fn)*(tn+fp)*(tn+fn) else None,
         "roc_curve": roc_points,
         "cumulative_gain": gain_points,
         "prediction_distribution": {
