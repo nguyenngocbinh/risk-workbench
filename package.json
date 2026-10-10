@@ -30,6 +30,6 @@
       "riskWorkbench.defaultCutoff":{"type":"number","default":0.5,"minimum":0,"maximum":1,"description":"Default cutoff for classification metrics."}
     }}
   },
-  "scripts": {"test":"node --test","check":"node --check src/extension.js && node --check src/providers/dashboard-provider.js && node --check src/services/python-runner.js"},
+  "scripts": {"test":"node --test","check":"node --check src/extension.js && node --check src/report.js && node --check src/providers/dashboard-provider.js && node --check src/services/python-runner.js"},
   "devDependencies": {}
 }
