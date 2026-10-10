@@ -1,7 +1,7 @@
 const vscode = require("vscode");
 const { PythonRunner } = require("./services/python-runner");
 const { DashboardProvider } = require("./providers/dashboard-provider");
-const { renderMarkdown } = require("./report");
+const { renderHtmlReport } = require("./report");
 
 function activate(context) {
   const runner = new PythonRunner(context);
@@ -50,13 +50,14 @@ function activate(context) {
     if (!result) { vscode.window.showWarningMessage("Run an audit or model validation first."); return; }
     const uri = await vscode.window.showSaveDialog({
       saveLabel: "Save RiskWorkbench report",
-      filters: { "Markdown": ["md"], "JSON": ["json"] },
-      defaultUri: vscode.workspace.workspaceFolders?.[0] ? vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, "risk-workbench-report.md") : undefined
+      filters: { "HTML report": ["html"] },
+      defaultUri: vscode.workspace.workspaceFolders?.[0] ? vscode.Uri.joinPath(vscode.workspace.workspaceFolders[0].uri, "risk-workbench-report.html") : undefined
     });
     if (!uri) return;
-    const content = uri.fsPath.toLowerCase().endsWith(".json") ? JSON.stringify(result, null, 2) : renderMarkdown(result);
-    await vscode.workspace.fs.writeFile(uri, Buffer.from(content, "utf8"));
-    vscode.window.showInformationMessage("RiskWorkbench report saved.");
+    const htmlUri = uri.fsPath.toLowerCase().endsWith(".html") ? uri : vscode.Uri.file(uri.fsPath + ".html");
+    const content = renderHtmlReport(result);
+    await vscode.workspace.fs.writeFile(htmlUri, Buffer.from(content, "utf8"));
+    vscode.window.showInformationMessage("RiskWorkbench HTML report saved.");
   }));
 }
 
