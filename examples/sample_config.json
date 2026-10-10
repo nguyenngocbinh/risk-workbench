@@ -1,0 +1,8 @@
+{
+  "target_column": "DEFAULT_FLAG",
+  "prediction_column": "PD",
+  "cutoff": 0.5,
+  "date_column": "PROCESS_DATE",
+  "customer_key": "CUSTOMER_ID",
+  "notes": "Example configuration only. Add time-based splits in later versions."
+}
