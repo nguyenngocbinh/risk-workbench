@@ -1,5 +1,3 @@
-const vscode = require("vscode");
-
 class DashboardProvider {
   constructor(extensionUri) {
     this.extensionUri = extensionUri;
@@ -18,6 +16,9 @@ class DashboardProvider {
   }
 
   openPanel() {
+    // Load the VS Code API only when a panel is actually opened. This keeps
+    // pure rendering helpers importable in Node.js unit tests and CLI tooling.
+    const vscode = require("vscode");
     if (this.panel) {
       this.panel.reveal(vscode.ViewColumn.One);
       this.panel.webview.html = this.renderHtml();
