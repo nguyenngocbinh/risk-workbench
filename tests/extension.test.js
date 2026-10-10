@@ -5,7 +5,7 @@ const { escapeHtml } = require("../src/providers/dashboard-provider");
 
 test("renderMarkdown includes JSON result and disclaimer", () => {
   const content = renderMarkdown({ operation: "audit", n_rows: 12 });
-  assert.match(content, /RiskWorkbench Model Validation/);
+  assert.match(content, /RiskWorkbench Report/);
   assert.match(content, /"n_rows": 12/);
   assert.match(content, /substitute for independent model validation/);
 });
@@ -21,7 +21,7 @@ test("renderHtmlReport creates a standalone HTML report and escapes data", () =>
     note: "</pre><script>alert(1)</script>"
   });
   assert.match(content, /<!DOCTYPE html>/);
-  assert.match(content, /RiskWorkbench Report/);
+  assert.match(content, /RiskWorkbench Model Validation Report/);
   assert.match(content, /audit &lt;script&gt;/);
   assert.match(content, /&lt;\/pre&gt;&lt;script&gt;/);
   assert.match(content, /independent model validation/);
