@@ -16,11 +16,20 @@ def test_audit_missing_and_duplicate_rows():
 def test_audit_missing_target_raises():
     with pytest.raises(ValueError,match="not found"): audit_dataframe(pd.DataFrame({"x":[1]}),"missing")
 
-def test_cli_json_output(tmp_path):
+@pytest.mark.parametrize("launch_mode", ["script", "module"])
+def test_cli_json_output(tmp_path, launch_mode):
     source=tmp_path/"sample.csv"
     pd.DataFrame({"y":[0,0,1,1],"pd":[0.1,0.2,0.7,0.9]}).to_csv(source,index=False)
-    root=Path(__file__).resolve().parents[1]
-    proc=subprocess.run([sys.executable,"-m","pd_workbench.cli","validate","--csv",str(source),"--target","y","--prediction","pd"],cwd=root.parent,capture_output=True,text=True,check=False)
+    python_root=Path(__file__).resolve().parents[1]
+    command = (
+        [sys.executable, str(python_root/"pd_workbench"/"cli.py")]
+        if launch_mode == "script"
+        else [sys.executable, "-m", "pd_workbench.cli"]
+    )
+    proc=subprocess.run(
+        command+["validate","--csv",str(source),"--target","y","--prediction","pd"],
+        cwd=python_root.parent,capture_output=True,text=True,check=False
+    )
     assert proc.returncode==0,proc.stderr
     body=json.loads(proc.stdout)
     assert body["metrics"]["gini"]==pytest.approx(1.0)
