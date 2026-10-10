@@ -5,6 +5,14 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 import pandas as pd
+
+# The VS Code extension launches this file by absolute path, so Python places
+# python/pd_workbench on sys.path rather than its parent directory. Add the
+# engine root explicitly to support both direct-script and module execution.
+ENGINE_ROOT = Path(__file__).resolve().parent.parent
+if str(ENGINE_ROOT) not in sys.path:
+    sys.path.insert(0, str(ENGINE_ROOT))
+
 from pd_workbench.audit import audit_dataframe
 from pd_workbench.metrics import evaluate_binary, population_stability_index
 
