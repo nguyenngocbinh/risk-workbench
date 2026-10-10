@@ -1,0 +1,35 @@
+{
+  "name": "risk-workbench",
+  "displayName": "RiskWorkbench",
+  "description": "Credit risk model development, validation, and monitoring tools for VS Code.",
+  "version": "0.1.0",
+  "publisher": "nguyenngocbinh",
+  "license": "MIT",
+  "repository": {"type": "git", "url": "https://github.com/nguyenngocbinh/risk-workbench.git"},
+  "homepage": "https://github.com/nguyenngocbinh/risk-workbench#readme",
+  "bugs": {"url": "https://github.com/nguyenngocbinh/risk-workbench/issues"},
+  "engines": {"vscode": "^1.85.0"},
+  "categories": ["Other", "Visualization"],
+  "keywords": ["credit-risk", "pd-model", "model-validation", "gini", "woe", "psi", "ifrs9", "irb", "risk-analytics"],
+  "main": "./src/extension.js",
+  "activationEvents": ["onView:riskWorkbench.dashboard", "onCommand:riskWorkbench.openDashboard", "onCommand:riskWorkbench.runDataAudit", "onCommand:riskWorkbench.validateModel", "onCommand:riskWorkbench.generateReport", "onCommand:riskWorkbench.selectPython"],
+  "contributes": {
+    "viewsContainers": {"activitybar": [{"id":"riskWorkbench","title":"RiskWorkbench","icon":"images/risk-workbench.svg"}]},
+    "views": {"riskWorkbench":[{"id":"riskWorkbench.dashboard","name":"Model Workbench"}]},
+    "commands": [
+      {"command":"riskWorkbench.openDashboard","title":"RiskWorkbench: Open Dashboard"},
+      {"command":"riskWorkbench.selectPython","title":"RiskWorkbench: Select Python Interpreter"},
+      {"command":"riskWorkbench.runDataAudit","title":"RiskWorkbench: Run Data Audit"},
+      {"command":"riskWorkbench.validateModel","title":"RiskWorkbench: Validate Model"},
+      {"command":"riskWorkbench.generateReport","title":"RiskWorkbench: Generate Report"}
+    ],
+    "configuration": {"title":"RiskWorkbench","properties":{
+      "riskWorkbench.pythonPath":{"type":"string","default":"","description":"Optional path to Python executable. Leave empty to use the VS Code-selected interpreter or python from PATH."},
+      "riskWorkbench.defaultTargetColumn":{"type":"string","default":"DEFAULT_FLAG","description":"Default binary target column."},
+      "riskWorkbench.defaultPredictionColumn":{"type":"string","default":"PD","description":"Default predicted probability column."},
+      "riskWorkbench.defaultCutoff":{"type":"number","default":0.5,"minimum":0,"maximum":1,"description":"Default cutoff for classification metrics."}
+    }}
+  },
+  "scripts": {"test":"node --test","check":"node --check src/extension.js && node --check src/providers/dashboard-provider.js && node --check src/services/python-runner.js"},
+  "devDependencies": {"@vscode/vsce":"^3.2.1"}
+}
