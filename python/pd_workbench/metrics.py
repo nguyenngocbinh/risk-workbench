@@ -52,13 +52,34 @@ def evaluate_binary(y_true, y_prob, cutoff: float = 0.5) -> dict:
     tp=int(((pred==1)&(y==1)).sum()); tn=int(((pred==0)&(y==0)).sum())
     fp=int(((pred==1)&(y==0)).sum()); fn=int(((pred==0)&(y==1)).sum())
     auc=roc_auc_score(y,p)
+    # Compact ROC points for the standalone HTML dashboard (at most ~100 points).
+    order = np.argsort(-p, kind="mergesort")
+    ys, ps = y[order], p[order]
+    ends = np.r_[np.flatnonzero(ps[:-1] != ps[1:]), len(ps)-1]
+    tpr = np.cumsum(ys)[ends] / int(y.sum())
+    fpr = np.cumsum(1-ys)[ends] / int((1-y).sum())
+    roc_points = [{"fpr": 0.0, "tpr": 0.0}]
+    step = max(1, int(np.ceil(len(ends) / 98)))
+    for i in range(0, len(ends), step):
+        roc_points.append({"fpr": float(fpr[i]), "tpr": float(tpr[i])})
+    if roc_points[-1] != {"fpr": 1.0, "tpr": 1.0}:
+        roc_points.append({"fpr": 1.0, "tpr": 1.0})
+    hist_edges = np.linspace(0.0, 1.0, 21)
+    hist_negative, _ = np.histogram(p[y == 0], bins=hist_edges, density=False)
+    hist_positive, _ = np.histogram(p[y == 1], bins=hist_edges, density=False)
     return {
         "n_rows":int(len(y)), "default_rate":float(y.mean()), "roc_auc":auc,
         "gini":float(2*auc-1), "ks":ks_statistic(y,p),
         "brier_score":float(np.mean((p-y)**2)), "cutoff":float(cutoff),
         "confusion_matrix":{"tn":tn,"fp":fp,"fn":fn,"tp":tp},
         "precision":float(tp/(tp+fp)) if tp+fp else None,
-        "recall":float(tp/(tp+fn)) if tp+fn else None
+        "recall":float(tp/(tp+fn)) if tp+fn else None,
+        "roc_curve": roc_points,
+        "prediction_distribution": {
+            "bin_edges": hist_edges.tolist(),
+            "non_default_counts": hist_negative.tolist(),
+            "default_counts": hist_positive.tolist()
+        }
     }
 
 def population_stability_index(expected, actual, bins: int = 10, epsilon: float = 1e-6) -> dict:
